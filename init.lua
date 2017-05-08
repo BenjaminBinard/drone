@@ -22,9 +22,9 @@ local drone = {
     weight = 1,
     collisionbox = {-0.15,-0.15,-0.15, 0.15,0.15,0.15},
     visual = "mesh",
-    visual_size = {x=1, y=1},
+    visual_size = {x=3, y=3},
     mesh = "drone.obj",
-    textures = {"default_stone.png"}, -- number of required textures depends on visual
+    textures = {"default_steel_block.png"}, -- number of required textures depends on visual
     is_visible = true,
     makes_footstep_sound = false,
     automatic_rotate = false,
@@ -60,8 +60,6 @@ function drone:on_rightclick(clicker)
 	if self.driver and clicker == self.driver then
 		clicker:set_detach()
 		self.driver = nil
-		self.object:set_animation({x=0,y=1},0, 0)
-		minetest.sound_stop(self.soundHandle)
 	elseif not self.driver then
 		self.driver = clicker
 		clicker:set_attach(self.object, "", {x=0,y=14,z=0}, {x=0,y=0,z=0})
@@ -69,42 +67,20 @@ function drone:on_rightclick(clicker)
 end
 
 function drone:on_activate(self, staticdata, dtime_s)
-	self.object:set_armor_groups({immortal = 1})
+	--self.object:set_armor_groups({immortal = 1})
 	if staticdata then
-		self.v = tonumber(staticdata)
+		--self.v = tonumber(staticdata)
 	end
-	self.last_v = self.v
+	--self.last_v = self.v
 end
 
 function drone:on_step(dtime)	
-	self.v = get_v(self.object:getvelocity()) * get_sign(self.v)
-	if self.driver then
-		local ctrl = self.driver:get_player_control()
-		local yaw = self.object:getyaw()
-		if ctrl.up then
-			self.v = self.v + 0.1
-		elseif ctrl.down then
-			self.v = self.v - 0.1
-		end
-		if ctrl.left then
-			if self.v < 0 then
-				self.object:setyaw(yaw - (1 + dtime) * 0.03)
-			else
-				self.object:setyaw(yaw + (1 + dtime) * 0.03)
-			end
-		elseif ctrl.right then
-			if self.v < 0 then
-				self.object:setyaw(yaw + (1 + dtime) * 0.03)
-			else
-				self.object:setyaw(yaw - (1 + dtime) * 0.03)
-			end
-		end
-	end
+	
 end
 
 minetest.register_craftitem("drone:drone", {
 	description = "Drone",
-	tiles = {"default_stone.png"},
+	tiles = {"default_steel_block.png"},
 	drawtype = "mesh",
 	mesh = "drone.obj",
 	on_place = function(itemstack, placer, pointed_thing)
